@@ -5,8 +5,8 @@ Create a <country_code>.zone.gz file containing all the IP networks
 for that country.
 
 
-(Net|Free|Open)BSD using pf:
-----------------------------
+__(Net|Free|Open)BSD using pf:__
+
 Add the following rules in your `/etc/pf.conf` file
 
 ```
@@ -22,8 +22,8 @@ gzcat <country_code>.zone.gz | xargs pfctl -t badguys -T add
 ```
 
 
-Linux:
-------
+__Linux:__
+
 ```
 gzcat <country_code>.zone.gz | awk '{print "iptables -A INPUT -s " $1 " -j REJECT"}' | sh
 ```
