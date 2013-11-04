@@ -9,8 +9,18 @@ import time
 import zipfile
 
 from collections import namedtuple
+from optparse import OptionParser
 
-CACHE_TIME = 86400 * 10         # the file on maxmind is updated once a month.
+__author__ = "Fred C - @0x9900 - http://github.com/0x9900"
+
+__version__ = '0.1.2'
+
+__decription__ = """Load the file `GeoIPCountryWhois` from MaxMind and split
+this file into a zone file for each country containting all the country
+IPv4 network."""
+
+
+CACHE_TIME = 86400 * 15         # the file on maxmind is updated once a month.
 
 DEFAULT_URL = ('http://geolite.maxmind.com/download/geoip/database/'
                'GeoIPCountryCSV.zip')
@@ -97,10 +107,11 @@ class GeoIP(object):
 
   """
 
-  def __init__(self, url):
+  def __init__(self, url, cache_time=CACHE_TIME):
     """
     Args:
       url: MaxMind url of the GeoIPCountryCSV file
+      cache_time: expiration time of the local cache (in seconds)
     """
 
     def download(url, filename):
@@ -114,7 +125,7 @@ class GeoIP(object):
     # if the local version is old download a new one
     try:
       fstat = os.stat(self.filename)
-      if (fstat.st_mtime + CACHE_TIME) - time.time() < 0:
+      if (fstat.st_mtime + cache_time) - time.time() < 0:
         raise OSError
     except OSError:
       download(url, self.filename)
@@ -154,8 +165,16 @@ def main():
   """Split IP networks for each country store these networks into
   `<country code>.zone.gz` file.
   """
+  usage = "usage: %prog [options] arg"
+  parser = OptionParser(usage=usage, description=__decription__,
+                        version=__version__)
+  parser.add_option("-f", "--force", dest="force",
+                    help="Force the reload of GeoIPCountryCSV")
+  (options, args) = parser.parse_args()
+
+  cache_time = 0 if options.force else CACHE_TIME
+  geoip = GeoIP(DEFAULT_URL, cache_time)
   zone_files = ZoneFiles(compress_target=True)
-  geoip = GeoIP(DEFAULT_URL)
   for record in geoip.read():
     zone_files.write(record)
 

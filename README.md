@@ -5,7 +5,7 @@ Create a <country_code>.zone.gz file containing all the IP networks
 for that country.
 
 
-__(Net|Free|Open)BSD using pf:__
+__{Net,Free,Open}BSD using pf:__
 
 Add the following rules in your `/etc/pf.conf` file
 
