@@ -168,7 +168,8 @@ def main():
   usage = "usage: %prog [options] arg"
   parser = OptionParser(usage=usage, description=__decription__,
                         version=__version__)
-  parser.add_option("-f", "--force", dest="force",
+  parser.add_option("-f", "--force", action="store_true", default=False,
+                    dest="force",
                     help="Force the reload of GeoIPCountryCSV")
   (options, args) = parser.parse_args()
 
