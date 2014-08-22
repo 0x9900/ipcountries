@@ -13,7 +13,7 @@ from optparse import OptionParser
 
 __author__ = "Fred C - @0x9900 - http://github.com/0x9900"
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 __decription__ = """Load the file `GeoIPCountryWhois` from MaxMind and split
 this file into a zone file for each country containting all the country
@@ -32,6 +32,8 @@ COPYRIGHT_INFO = """# Zone: .%s
 # http://www.MaxMind.com/
 #
 """
+
+TARGET_DIR = '/tmp'
 
 CSV_FORMAT =  'start end int_start int_end code country'
 class GeoRecord(namedtuple('GeoRecord', CSV_FORMAT)):
@@ -64,7 +66,7 @@ class ZoneFiles(object):
 
     if key not in self.open_fds:
       if self.gzip:
-        filename = '%s.zone.gz' % key
+        filename = os.path.join(TARGET_DIR, '%s.zone.gz' % key)
         self.open_fds[key] = gzip.open(filename, 'w')
       else:
         filename = '%s.zone' % key
